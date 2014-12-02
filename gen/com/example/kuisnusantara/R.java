@@ -1295,6 +1295,7 @@ containing a value of this type.
         public static final int guesses=0x7f0a0014;
         public static final int hello_world=0x7f0a000e;
         public static final int incorrect_answer=0x7f0a0015;
+        public static final int lose=0x7f0a001e;
         public static final int more_regions_message=0x7f0a0017;
         public static final int more_regions_title=0x7f0a0016;
         public static final int of=0x7f0a0018;
