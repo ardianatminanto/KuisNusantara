@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements ViewFactory{
 		imageSwitcher=(ImageSwitcher) findViewById(R.id.imageSwitcher1);
 		imageSwitcher.setFactory(this);
 		try {
-			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".jpg")).getDrawable());
+			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".png")).getDrawable());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -157,7 +157,7 @@ public class MainActivity extends Activity implements ViewFactory{
 			prov--;
 		else prov = listProv.length - 1;
 		try {
-			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".jpg")).getDrawable());
+			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".png")).getDrawable());
 			initView();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -173,7 +173,7 @@ public class MainActivity extends Activity implements ViewFactory{
 			prov++;
 		else prov = 0;
 		try {
-			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".jpg")).getDrawable());
+			imageSwitcher.setImageDrawable(insertPhoto(getAssets().open("provinsi/" +listProv[prov]+ ".png")).getDrawable());
 			initView();
 		} catch (IOException e) {
 			e.printStackTrace();
