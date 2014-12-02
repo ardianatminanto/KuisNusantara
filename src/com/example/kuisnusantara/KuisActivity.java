@@ -17,7 +17,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -29,36 +28,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class KuisActivity extends Activity {
 	
 	private static final String TAG = "KuisNusantara Activity";  
 	private List<String> fileNameList; // flag file names
 	private List<String> quizCountriesList;
-	private List<String> answerList;
 	private String correctAnswer; 
 	private int totalGuesses; // number of guesses made
 	private int correctAnswers; // number of correct guesses
-	private int guessRows;
-	private int poin = 0; //poin terkumpul
+	private int guessRows; 
 	private Random random; 
 	private Handler handler;
 	private Animation shakeAnimation;
-	private Animation blinkAnimation;
 	private String region;
-	private String prov;
 	   
-	private TextView poinView;
 	private TextView answerTextView;
 	private TextView questionNumberTextView;
 	private ImageView flagImageView; 
@@ -71,25 +62,18 @@ public class KuisActivity extends Activity {
 	    setContentView(R.layout.activity_kuis); 
 
 	    fileNameList = new ArrayList<String>();
-	    quizCountriesList = new ArrayList<String>();
-	    answerList = new ArrayList<String>();
+	    quizCountriesList = new ArrayList<String>(); 
 	    guessRows = 4; 
 	    random = new Random(); 
 	    handler = new Handler(); 
 	    
 	    shakeAnimation = 
 	       AnimationUtils.loadAnimation(this, R.anim.incorrect_shake); 
-	    shakeAnimation.setRepeatCount(3);
-	    
-	    blinkAnimation = new AlphaAnimation(0,1);
-	    blinkAnimation.setDuration(250); // duration - half a second
-	    blinkAnimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-	    blinkAnimation.setRepeatCount(Animation.RELATIVE_TO_SELF); // Repeat animation infinitely
-	    blinkAnimation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+	    shakeAnimation.setRepeatCount(3); 
 	      
 	    Bundle extras = getIntent().getExtras();
 	    region = extras.getString("nama_prov");
-	    //String prov = "";
+	    String prov = "";
 	    //Set Title Activity
 	    if(region.length()==3){
 	    	if(region.charAt(0)=='n'&&region.charAt(2)=='b')
@@ -177,9 +161,6 @@ public class KuisActivity extends Activity {
 	    buttonTableLayout = 
 	       (TableLayout) findViewById(R.id.buttonTableLayout);
 	    
-	    poinView = (TextView)findViewById(R.id.titleTextView);
-	    poinView.setText("Poin Anda : "+String.valueOf(poin));
-	    
 	    //answerTextView = (TextView) findViewById(R.id.answerTextView);
 	    
 	    questionNumberTextView.setText(
@@ -196,7 +177,7 @@ public class KuisActivity extends Activity {
 	    {             
 	    	String[] paths = assets.list(region);
 	        for (String path : paths) 
-	        	fileNameList.add(path.replace(".png", ""));
+	        	fileNameList.add(path.replace(".jpg", ""));
 	    } 
 	    catch (IOException e) 
 	    {
@@ -226,7 +207,8 @@ public class KuisActivity extends Activity {
 	{
 	    String nextImageName = quizCountriesList.remove(0);
 	    correctAnswer = nextImageName;
-  
+
+	    //answerTextView.setText("");  
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " " + 
 	       (correctAnswers + 1) + " " + 
@@ -236,7 +218,7 @@ public class KuisActivity extends Activity {
 	    InputStream stream;
 	    try
 	    {
-	       stream = assets.open(region + "/" + nextImageName + ".png");
+	       stream = assets.open(region + "/" + nextImageName + ".jpg");
 	       Drawable flag = Drawable.createFromStream(stream, nextImageName);
 	       flagImageView.setImageDrawable(flag);                       
 	    }
@@ -268,20 +250,18 @@ public class KuisActivity extends Activity {
 	          String fileName = fileNameList.get((row * 1) + column);
 	          newGuessButton.setWidth(50);
 	          newGuessButton.setHeight(50);
-	          newGuessButton.setText(getAnswerName(fileName));
-	          newGuessButton.setId(row);
+	          newGuessButton.setText(getCountryName(fileName));
 	          newGuessButton.setOnClickListener(guessButtonListener);
 	          newGuessButton.setSingleLine(true);
 	          currentTableRow.addView(newGuessButton);
-	          answerList.add(newGuessButton.getText().toString());
 	       } 
 	    } 
 	    
 	    int row = random.nextInt(guessRows);
 	    int column = random.nextInt(1); 
 	    TableRow randomTableRow = getTableRow(row);
-	    String countryName = getAnswerName(correctAnswer);
-	    ((Button)randomTableRow.getChildAt(column)).setText(countryName);
+	    String countryName = getCountryName(correctAnswer);
+	    ((Button)randomTableRow.getChildAt(column)).setText(countryName);    
 	} 
 	
 	private TableRow getTableRow(int row)
@@ -289,7 +269,7 @@ public class KuisActivity extends Activity {
 	    return (TableRow) buttonTableLayout.getChildAt(row);
 	} 
 	
-	private String getAnswerName(String name)
+	private String getCountryName(String name)
 	{
 	    return name.substring(name.indexOf('-') + 1).replace('_', ' ');
 	}
@@ -297,18 +277,17 @@ public class KuisActivity extends Activity {
 	private void submitGuess(Button guessButton) 
 	{
 	    String guess = guessButton.getText().toString();
-	    String answer = getAnswerName(correctAnswer);
+	    String answer = getCountryName(correctAnswer);
 	    ++totalGuesses; 
 	    if (guess.equals(answer)) 
 	    {
 	       ++correctAnswers;
-	       poin+=10;
+	       //answerTextView.setText(answer + "!");
+	       //answerTextView.setTextColor(
+	          //getResources().getColor(R.color.correct_answer));
 	       guessButton.setBackgroundColor(Color.GREEN);
 	       
 	       disableButtons();
-		   poinView.setText("Poin Anda : "+String.valueOf(poin));
-		   guessButton.startAnimation(blinkAnimation);
-		   answerList.clear();
 	       if (correctAnswers == 8) 
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -347,51 +326,11 @@ public class KuisActivity extends Activity {
 	    } 
 	    
 	    else  
-	    {  
-	       int index = 0;
-	       flagImageView.startAnimation(shakeAnimation);
-	       for(int i=0; i<answerList.size(); i++){
-	    	   Button answers = (Button)findViewById(i);
-	    	   if(!answerList.get(i).equals(answers.getText().toString())){
-	    		   index=i;
-	    	   }
-	       }
+	    {  flagImageView.startAnimation(shakeAnimation);
+	       //answerTextView.setText(R.string.incorrect_answer);
+	       //answerTextView.setTextColor(
+	          //getResources().getColor(R.color.incorrect_answer));
 	       guessButton.setEnabled(false);
-	       guessButton.setBackgroundColor(Color.RED);
-	       Button correct = (Button)findViewById(index);
-	       correct.setBackgroundColor(Color.GREEN);
-	       correct.startAnimation(blinkAnimation);
-	       answerList.clear();
-	       
-	       //Message Show main lagi atau tidak
-	       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-	          builder.setTitle(R.string.lose); 
-	            
-	          builder.setMessage("Anda telah kalah menjawab pertanyaan Propinsi "+prov);
-
-	          builder.setCancelable(false); 
-	          builder.setPositiveButton(R.string.reset_quiz,
-	             new DialogInterface.OnClickListener()                
-	             {                                                       
-	                public void onClick(DialogInterface dialog, int id) 
-	                {
-	                   resetQuiz();                                      
-	                }                              
-	             }
-	          );
-	          builder.setNegativeButton("Keluar",
-	            new DialogInterface.OnClickListener()                
-	             {                                                       
-	                public void onClick(DialogInterface dialog, int id) 
-	                {
-	                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
-		  			    startActivity(i);                                      
-	                }                              
-	             }	  	  
-	          );
-	          AlertDialog resetDialog = builder.create();
-	          resetDialog.show();
 	    } 
 	} 
 
@@ -417,11 +356,6 @@ public class KuisActivity extends Activity {
 	    //menu.add(Menu.NONE, REGIONS_MENU_ID, Menu.NONE, R.string.regions);             
 	                                                              
 	    return true; 
-	}
-	
-	@Override
-	public void onBackPressed(){
-		
 	}
 	
 	@Override
@@ -508,7 +442,6 @@ public class KuisActivity extends Activity {
 	    @Override
 	    public void onClick(View v) 
 	    {
-	       
 	       submitGuess((Button) v); 
 	    }
 	}; 
