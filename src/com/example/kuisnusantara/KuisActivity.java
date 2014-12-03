@@ -203,8 +203,12 @@ public class KuisActivity extends Activity {
 	    } 
 	      
 	    correctAnswers = 0; 
-	    totalGuesses = 0; 
-	    quizCountriesList.clear(); 
+	    totalGuesses = 0;
+	    poin = 0;
+	    quizCountriesList.clear();
+	    
+	    poinView = (TextView)findViewById(R.id.titleTextView);
+	    poinView.setText("Poin Anda : "+String.valueOf(poin));
 	      
 	    int flagCounter = 1; 
 	    int numberOfFlags = fileNameList.size();
@@ -373,11 +377,11 @@ public class KuisActivity extends Activity {
 	       AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	       builder.setTitle(R.string.lose); 
            
-	       builder.setMessage("Anda telah kalah menjawab pertanyaan Propinsi "+prov);
+	       builder.setMessage("Maaf, Jawaban Anda Salah");
 
 	       builder.setCancelable(false);
 	       
-	       builder.setPositiveButton(R.string.reset_quiz,
+	       builder.setPositiveButton("Main Lagi",
 	             new DialogInterface.OnClickListener()                
 	             {                                                       
 	                public void onClick(DialogInterface dialog, int id) 
@@ -425,6 +429,11 @@ public class KuisActivity extends Activity {
 	    //menu.add(Menu.NONE, REGIONS_MENU_ID, Menu.NONE, R.string.regions);             
 	                                                              
 	    return true; 
+	}
+	
+	@Override
+	public void onBackPressed(){
+		
 	}
 	
 	@Override
