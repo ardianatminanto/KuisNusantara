@@ -319,12 +319,9 @@ public class KuisActivity extends Activity {
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-	          builder.setTitle(R.string.reset_quiz); 
+	          builder.setTitle("Anda Berhasil"); 
 	            
-	          builder.setMessage(String.format("%d %s, %.02f%% %s", 
-	             totalGuesses, getResources().getString(R.string.guesses), 
-	             (1000 / (double) totalGuesses), 
-	             getResources().getString(R.string.correct)));
+	          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
 
 	          builder.setCancelable(false); 
 	          builder.setPositiveButton(R.string.reset_quiz,

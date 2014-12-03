@@ -65,10 +65,11 @@
          android:orientation="horizontal"></TableRow>
    </TableLayout>
    
-   <!-- <TextView android:id="@+id/answerTextView"
+   <TextView android:id="@+id/answerTextView"
       android:layout_width="match_parent" 
       android:layout_height="wrap_content"
-      android:textSize="@dimen/answer_size" 
+      android:textSize="@dimen/answer_size"
+      android:text="tes" 
       android:layout_gravity="center" android:textStyle="bold" 
-      android:gravity="center"></TextView> -->
+      android:gravity="center"></TextView>
 </LinearLayout>
