@@ -61,7 +61,10 @@ public class KuisActivity extends Activity {
 	private TextView answerTextView;
 	private TextView questionNumberTextView;
 	private ImageView flagImageView; 
-	private TableLayout buttonTableLayout; 
+	private TableLayout buttonTableLayout;
+	
+	//bantuan
+	private ImageView bantuan1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -184,6 +187,7 @@ public class KuisActivity extends Activity {
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " 1 " + 
 	       getResources().getString(R.string.of) + " 10");
+	    
 	    resetQuiz();
 	} 
 	
@@ -285,7 +289,9 @@ public class KuisActivity extends Activity {
 	    int column = random.nextInt(1); 
 	    TableRow randomTableRow = getTableRow(row);
 	    String countryName = getCountryName(correctAnswer);
-	    ((Button)randomTableRow.getChildAt(column)).setText(countryName);    
+	    ((Button)randomTableRow.getChildAt(column)).setText(countryName);
+	    
+	    
 	} 
 	
 	private TableRow getTableRow(int row)
