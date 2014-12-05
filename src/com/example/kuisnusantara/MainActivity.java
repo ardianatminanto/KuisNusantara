@@ -184,7 +184,7 @@ public class MainActivity extends Activity implements ViewFactory{
 		//Toast.makeText(getApplicationContext(), listNamaProv[0], Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(MainActivity.this, KuisActivity.class);
 		i.putExtra("nama_prov", listProv[prov]);
-		Log.d("send", listProv[prov]);
+		Log.d("send", listProv[prov]);//
 		startActivity(i);
 	}
 	
