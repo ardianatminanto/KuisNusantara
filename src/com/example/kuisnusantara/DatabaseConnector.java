@@ -591,6 +591,10 @@ public class DatabaseConnector {
 		return 0;
 	}
 	
+	public Cursor getGambar(int indexProv){
+		return database.rawQuery("SELECT * FROM " +tabelGambar+ " WHERE id_prov = " +indexProv , null);
+	}
+	
 	//--------------------------------------------------OWN FUNCTION----------------------------------------------------------------
 	
 	public void close(){

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -108,8 +109,6 @@ public class KuisActivity extends Activity {
 	    poinView = (TextView)findViewById(R.id.titleTextView);
 	    poinView.setText("Poin Anda : "+String.valueOf(poin));
 	    
-	    //answerTextView = (TextView) findViewById(R.id.answerTextView);
-	    
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " 1 " + 
 	       getResources().getString(R.string.of) + " 10");
@@ -118,19 +117,20 @@ public class KuisActivity extends Activity {
 	} 
 	
 	private void resetQuiz() 
-	{      
-	    AssetManager assets = getAssets(); 
-	    fileNameList.clear();
-	    try 
-	    {             
-	    	String[] paths = assets.list(region);
-	        for (String path : paths) 
-	        	fileNameList.add(path.replace(".jpg", ""));
-	    } 
-	    catch (IOException e) 
-	    {
-	       Log.e(TAG, "Error loading image file names", e);
-	    } 
+	{   
+		DatabaseConnector dc = new DatabaseConnector(this);
+		fileNameList.clear();
+		Cursor c = dc.getGambar(indexProv);
+		
+		if(c.moveToFirst()){
+			do{
+				fileNameList.add(c.getString(c.getColumnIndex("nama")));
+				Log.d("here",c.getString(c.getColumnIndex("nama")));
+			}while(c.moveToNext());
+		}
+		else Log.e(TAG, "Error loading image file names");
+		
+		dc.close();
 	      
 	    correctAnswers = 0; 
 	    totalGuesses = 0;
@@ -142,7 +142,7 @@ public class KuisActivity extends Activity {
 	      
 	    int flagCounter = 1; 
 	    int numberOfFlags = fileNameList.size();
-	    while (flagCounter <= 8) 
+	    while (flagCounter <= 10) 
 	    {
 	       int randomIndex = random.nextInt(numberOfFlags);          
 	       String fileName = fileNameList.get(randomIndex);
@@ -164,7 +164,7 @@ public class KuisActivity extends Activity {
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " " + 
 	       (correctAnswers + 1) + " " + 
-	       getResources().getString(R.string.of) + " 8");
+	       getResources().getString(R.string.of) + " 10");
 	    
 	    AssetManager assets = getAssets(); // get app's AssetManager
 	    InputStream stream;
@@ -239,15 +239,12 @@ public class KuisActivity extends Activity {
 	    {
 	       ++correctAnswers;
 	       poin+=10;
-	       //answerTextView.setText(answer + "!");
-	       //answerTextView.setTextColor(
-	          //getResources().getColor(R.color.correct_answer));
 	       guessButton.setBackgroundColor(Color.GREEN);
 	       disableButtons();
 	       poinView.setText("Poin Anda : "+String.valueOf(poin));
 		   guessButton.startAnimation(blinkAnimation);
 		   answerList.clear();
-	       if (correctAnswers == 8) 
+	       if (correctAnswers == 10) 
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -297,12 +294,7 @@ public class KuisActivity extends Activity {
 	       correct.setBackgroundColor(Color.GREEN);
 	       correct.startAnimation(blinkAnimation);
 	       answerList.clear();
-	       //answerTextView.setText(R.string.incorrect_answer);
-	       //answerTextView.setTextColor(
-	          //getResources().getColor(R.color.incorrect_answer));
-	       //guessButton.setEnabled(false);
-
-	       //Message Show main lagi atau tidak
+	       
 	       AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	       builder.setTitle(R.string.lose); 
            
@@ -351,93 +343,17 @@ public class KuisActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)             
-	{            
-	   // super.onCreateOptionsMenu(menu);                        
-	                                                              
-	   // menu.add(Menu.NONE, CHOICES_MENU_ID, Menu.NONE, R.string.choices);             
-	    //menu.add(Menu.NONE, REGIONS_MENU_ID, Menu.NONE, R.string.regions);             
-	                                                              
+	{                                              
 	    return true; 
 	}
 	
 	@Override
-	public void onBackPressed(){
-		
+	public void onBackPressed(){	
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
-	{
-	      /*switch (item.getItemId()) 
-	      {
-	         case CHOICES_MENU_ID:
-	            final String[] possibleChoices = 
-	               getResources().getStringArray(R.array.guessesList);
-
-	            AlertDialog.Builder choicesBuilder = 
-	               new AlertDialog.Builder(this);         
-	            choicesBuilder.setTitle(R.string.choices);
-	         
-	            choicesBuilder.setItems(R.array.guessesList,                    
-	               new DialogInterface.OnClickListener()                    
-	               {                                                        
-	                  public void onClick(DialogInterface dialog, int item) 
-	                  {                                                     
-	                     guessRows = Integer.parseInt(                      
-	                        possibleChoices[item].toString()) / 3;          
-	                     resetQuiz();                      
-	                  }                               
-	               } 
-	            );                               
-	            AlertDialog choicesDialog = choicesBuilder.create();
-	            choicesDialog.show();          
-	            return true; 
-
-	         case REGIONS_MENU_ID:
-	            final String[] regionNames = 
-	               regionsMap.keySet().toArray(new String[regionsMap.size()]);
-	         
-	            boolean[] regionsEnabled = new boolean[regionsMap.size()];
-	            for (int i = 0; i < regionsEnabled.length; ++i)
-	               regionsEnabled[i] = regionsMap.get(regionNames[i]);
-	            AlertDialog.Builder regionsBuilder =
-	               new AlertDialog.Builder(this);
-	            regionsBuilder.setTitle(R.string.regions);
-	            
-	            String[] displayNames = new String[regionNames.length];
-	            for (int i = 0; i < regionNames.length; ++i)
-	               displayNames[i] = regionNames[i].replace('_', ' ');
-	         
-	            regionsBuilder.setMultiChoiceItems( 
-	               displayNames, regionsEnabled,
-	               new DialogInterface.OnMultiChoiceClickListener() 
-	               {
-	                  @Override
-	                  public void onClick(DialogInterface dialog, int which,
-	                     boolean isChecked) 
-	                  {
-	                   regionsMap.put(
-	                        regionNames[which].toString(), isChecked);
-	                  }
-	               } 
-	            ); 
-	          
-	            regionsBuilder.setPositiveButton(R.string.reset_quiz,
-	               new DialogInterface.OnClickListener()
-	               {
-	                  @Override
-	                  public void onClick(DialogInterface dialog, int button)
-	                  {
-	                     resetQuiz(); 
-	                  } 
-	               } 
-	            ); 
-	            AlertDialog regionsDialog = regionsBuilder.create();
-	            regionsDialog.show();
-	            return true;
-	      }*/
-		   
-		  
+	{	  
 		if (item.getItemId() == android.R.id.home ){
 			finish();
 		}
