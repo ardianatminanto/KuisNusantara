@@ -84,14 +84,12 @@ public class MainActivity extends Activity implements ViewFactory{
 	
 	private void namaProv(){
 		DatabaseConnector dc = new DatabaseConnector(this);
-		TextView namaProv = (TextView) findViewById(R.id.namaProv);
 		namaProv.setText(dc.namaProv(prov+1));
 		dc.close();
 	}
 	
 	private void namaIbukota(){
 		DatabaseConnector dc = new DatabaseConnector(this);
-		TextView ibuKota = (TextView) findViewById(R.id.textIbukota);
 		ibuKota.setText(dc.namaIbukota(prov+1));
 		dc.close();
 	}
@@ -99,8 +97,6 @@ public class MainActivity extends Activity implements ViewFactory{
 	private void tampilanGambar(){
 		DatabaseConnector dc = new DatabaseConnector(this);
 		int totalGambar =dc.jumlahGambarProv(prov+1), totalPoin = dc.maxPoin(prov+1);
-		TextView jumlahGambar = (TextView) findViewById(R.id.textJumlahGambar);
-		TextView maksPoin = (TextView) findViewById(R.id.textMaksPoin);
 		jumlahGambar.setText(Integer.toString(totalGambar));
 		maksPoin.setText(Integer.toString(totalPoin));
 		dc.close();
@@ -119,11 +115,21 @@ public class MainActivity extends Activity implements ViewFactory{
 	private int prov = 0;
 	LinearLayout gambarProvinsi;
 	private ImageSwitcher imageSwitcher;
+	private TextView jumlahGambar;
+	private TextView maksPoin;
+	private TextView ibuKota;
+	private TextView namaProv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		jumlahGambar = (TextView) findViewById(R.id.textJumlahGambar);
+		maksPoin = (TextView) findViewById(R.id.textMaksPoin);
+		ibuKota = (TextView) findViewById(R.id.textIbukota);
+		namaProv = (TextView) findViewById(R.id.namaProv);
+		
 		DatabaseConnector dc = new DatabaseConnector(this);
 		prov = 0;
 		Cursor c = dc.getProv();
@@ -183,8 +189,11 @@ public class MainActivity extends Activity implements ViewFactory{
 	public void masuk(View v){
 		//Toast.makeText(getApplicationContext(), listNamaProv[0], Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(MainActivity.this, KuisActivity.class);
-		i.putExtra("nama_prov", listProv[prov]);
-		Log.d("send", listProv[prov]);//
+		i.putExtra("nama_prov", namaProv.getText().toString());
+		i.putExtra("id_prov", prov+1);
+		i.putExtra("region_prov", listProv[prov]);
+		
+		Log.d("send", namaProv.getText().toString());//
 		startActivity(i);
 	}
 	
