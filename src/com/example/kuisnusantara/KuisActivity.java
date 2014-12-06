@@ -20,7 +20,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -38,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class KuisActivity extends Activity {
 	
@@ -63,8 +67,18 @@ public class KuisActivity extends Activity {
 	private ImageView flagImageView; 
 	private TableLayout buttonTableLayout;
 	
-	//bantuan
+	//hint
 	private ImageView bantuan1;
+	private ColorMatrixColorFilter filterHint1;
+	private ImageView bantuan2;
+	private ColorMatrixColorFilter filterHint2;
+	private ImageView bantuan3;
+	private ColorMatrixColorFilter filterHint3;
+	private ImageView bantuan4;
+	private ColorMatrixColorFilter filterHint4;
+	private int nyawa = 1;
+	private int bantuan = 0;
+	private List<Integer> jawabanSalah;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -91,7 +105,7 @@ public class KuisActivity extends Activity {
 	    
 	    Bundle extras = getIntent().getExtras();
 	    region = extras.getString("nama_prov");
-	    //String prov = "";
+	  
 	    //Set Title Activity
 	    if(region.length()==3){
 	    	if(region.charAt(0)=='n'&&region.charAt(2)=='b')
@@ -182,11 +196,27 @@ public class KuisActivity extends Activity {
 	    poinView = (TextView)findViewById(R.id.titleTextView);
 	    poinView.setText("Poin Anda : "+String.valueOf(poin));
 	    
-	    //answerTextView = (TextView) findViewById(R.id.answerTextView);
-	    
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " 1 " + 
 	       getResources().getString(R.string.of) + " 10");
+	    
+	    //deklarasi variabel bantuan
+	    bantuan1 = (ImageView) findViewById(R.id.bantuan1);
+		bantuan1.setOnClickListener(hint1Listener);
+		filterHint1 = (ColorMatrixColorFilter) bantuan1.getColorFilter();
+		
+		jawabanSalah = new ArrayList<Integer>();
+		
+		bantuan2 = (ImageView)findViewById(R.id.bantuan2);
+		bantuan2.setOnClickListener(hint2Listener);
+		filterHint2 = (ColorMatrixColorFilter)bantuan2.getColorFilter();
+		
+		bantuan3 = (ImageView)findViewById(R.id.bantuan3);
+		bantuan3.setOnClickListener(hint3Listener);
+		filterHint3 = (ColorMatrixColorFilter)bantuan3.getColorFilter();
+		
+		bantuan4 = (ImageView)findViewById(R.id.bantuan4);
+		filterHint4 = (ColorMatrixColorFilter)bantuan4.getColorFilter();
 	    
 	    resetQuiz();
 	} 
@@ -211,9 +241,25 @@ public class KuisActivity extends Activity {
 	    poin = 0;
 	    quizCountriesList.clear();
 	    
+	    //reset nyawa dan bantuan
+	    nyawa = 1;
+	    bantuan = 0;
+	    
 	    poinView = (TextView)findViewById(R.id.titleTextView);
 	    poinView.setText("Poin Anda : "+String.valueOf(poin));
-	      
+	   	
+	    //reset Hint
+	    bantuan1.setColorFilter(filterHint1);
+	    bantuan1.setOnClickListener(hint1Listener);
+	    
+	    bantuan2.setColorFilter(filterHint2);
+	    bantuan2.setOnClickListener(hint2Listener);
+	    
+	    bantuan3.setColorFilter(filterHint3);
+	    bantuan3.setOnClickListener(hint3Listener);
+	    
+	    bantuan4.setColorFilter(filterHint4);
+	    
 	    int flagCounter = 1; 
 	    int numberOfFlags = fileNameList.size();
 	    while (flagCounter <= 8) 
@@ -290,8 +336,6 @@ public class KuisActivity extends Activity {
 	    TableRow randomTableRow = getTableRow(row);
 	    String countryName = getCountryName(correctAnswer);
 	    ((Button)randomTableRow.getChildAt(column)).setText(countryName);
-	    
-	    
 	} 
 	
 	private TableRow getTableRow(int row)
@@ -312,10 +356,12 @@ public class KuisActivity extends Activity {
 	    if (guess.equals(answer)) 
 	    {
 	       ++correctAnswers;
-	       poin+=10;
-	       //answerTextView.setText(answer + "!");
-	       //answerTextView.setTextColor(
-	          //getResources().getColor(R.color.correct_answer));
+	       if(bantuan == 2){
+	    	   poin+=5;
+	    	   bantuan=0;
+	       }   
+	       else
+	    	   poin+=10;
 	       guessButton.setBackgroundColor(Color.GREEN);
 	       disableButtons();
 	       poinView.setText("Poin Anda : "+String.valueOf(poin));
@@ -324,9 +370,7 @@ public class KuisActivity extends Activity {
 	       if (correctAnswers == 8) 
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
 	          builder.setTitle("Anda Berhasil"); 
-	            
 	          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
 
 	          builder.setCancelable(false); 
@@ -354,7 +398,6 @@ public class KuisActivity extends Activity {
 	             }, 1000); 
 	       }
 	    } 
-	    
 	    else  
 	    {  
 	       int index = 0;
@@ -371,42 +414,59 @@ public class KuisActivity extends Activity {
 	       correct.setBackgroundColor(Color.GREEN);
 	       correct.startAnimation(blinkAnimation);
 	       answerList.clear();
-	       //answerTextView.setText(R.string.incorrect_answer);
-	       //answerTextView.setTextColor(
-	          //getResources().getColor(R.color.incorrect_answer));
-	       //guessButton.setEnabled(false);
+	       
+	       if(nyawa==1 || bantuan==2){
+	    	   if(bantuan!=2){
+	    		   nyawa--;
+				   ColorMatrix matrix = new ColorMatrix();
+		   		   matrix.setSaturation(0);
+		   		   ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+		   		   bantuan4.setColorFilter(cf);
+	    	   }
+	    	   else
+	    		   bantuan=0;
+	    	   ++correctAnswers;
+	    	   handler.postDelayed(
+	    	   new Runnable()
+			   { 
+			     @Override
+			     public void run()
+			     {
+			        loadNextFlag();
+			     }
+			   }, 1000);
+	       }
+	       else{
+	    	   //Message Show main lagi atau tidak
+		       AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		       builder.setTitle(R.string.lose); 
+	           
+		       builder.setMessage("Maaf, Jawaban Anda Salah");
 
-	       //Message Show main lagi atau tidak
-	       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	       builder.setTitle(R.string.lose); 
-           
-	       builder.setMessage("Maaf, Jawaban Anda Salah");
-
-	       builder.setCancelable(false);
-	       
-	       builder.setPositiveButton("Main Lagi",
-	             new DialogInterface.OnClickListener()                
-	             {                                                       
-	                public void onClick(DialogInterface dialog, int id) 
-	                {
-	                   resetQuiz();                                      
-	                }                              
-	             }
-	          );
-	       
-	       builder.setNegativeButton("Keluar",
-	            new DialogInterface.OnClickListener()                
-	             {                                                       
-	                public void onClick(DialogInterface dialog, int id) 
-	                {
-	                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
-		  			    startActivity(i);                                      
-	                }                              
-	             }	  	  
-	          );
-	       
-	       AlertDialog resetDialog = builder.create();
-	       resetDialog.show();
+		       builder.setCancelable(false);
+		       
+		       builder.setPositiveButton("Main Lagi",
+		             new DialogInterface.OnClickListener()                
+		             {                                                       
+		                public void onClick(DialogInterface dialog, int id) 
+		                {
+		                   resetQuiz();                                      
+		                }                              
+		             }
+		          );
+		       builder.setNegativeButton("Keluar",
+		            new DialogInterface.OnClickListener()                
+		             {                                                       
+		                public void onClick(DialogInterface dialog, int id) 
+		                {
+		                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
+			  			    startActivity(i);                                      
+		                }                              
+		             }	  	  
+		          );
+		       AlertDialog resetDialog = builder.create();
+		       resetDialog.show();
+	       }
 	    } 
 	} 
 
@@ -419,6 +479,28 @@ public class KuisActivity extends Activity {
 	          tableRow.getChildAt(i).setEnabled(false);
 	    } 
 	} 
+	
+	private void disableWrongAnswer()
+	{
+		for(int i=0; i<answerList.size(); i++){
+    	   Button answers = (Button)findViewById(i);
+    	   if(answerList.get(i).equals(answers.getText().toString())){
+    		   jawabanSalah.add(i);
+    	   }
+       }
+	   List<Integer> disableAnswers = new ArrayList<Integer>();
+	   for(int i=0; i<2; i++){
+		   int index = random.nextInt(jawabanSalah.size());
+		   disableAnswers.add(jawabanSalah.get(index));
+		   jawabanSalah.remove(index);
+	   }
+	   for(int i=0; i<disableAnswers.size(); i++){
+		   Button answer = (Button)findViewById(disableAnswers.get(i));
+		   answer.setEnabled(false);
+	   }
+	   jawabanSalah.clear();
+	   bantuan1.setOnClickListener(null);
+	}
 	
 	private final int CHOICES_MENU_ID = Menu.FIRST;
 	private final int REGIONS_MENU_ID = Menu.FIRST + 1;
@@ -525,5 +607,65 @@ public class KuisActivity extends Activity {
 	    {
 	       submitGuess((Button) v); 
 	    }
-	}; 
+	};
+	
+	//onClick hint quiz
+	private OnClickListener hint1Listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			ColorMatrix matrix = new ColorMatrix();
+			matrix.setSaturation(0);
+			ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+			((ImageView) v).setColorFilter(cf);
+			
+			//set bantuan menjadi 1
+			bantuan = 1;
+			
+			disableWrongAnswer();
+		}
+	};
+	
+	private OnClickListener hint2Listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			ColorMatrix matrix = new ColorMatrix();
+			matrix.setSaturation(0);
+			ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+			((ImageView) v).setColorFilter(cf);
+			
+			//set bantuan menjadi 2
+			bantuan = 2;
+		}
+	};
+	
+	private OnClickListener hint3Listener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			ColorMatrix matrix = new ColorMatrix();
+			matrix.setSaturation(0);
+			ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+			((ImageView) v).setColorFilter(cf);
+			//set bantuan menjadi 3
+			bantuan = 3;
+			
+			//skip question
+			++correctAnswers;
+			handler.postDelayed(
+			new Runnable()
+		    { 
+				@Override
+				public void run()
+				{
+					loadNextFlag();
+				}
+		    }, 100);
+			answerList.clear();
+		}
+	};
 }
