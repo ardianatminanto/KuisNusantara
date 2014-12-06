@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -61,7 +60,6 @@ public class KuisActivity extends Activity {
 	private Animation blinkAnimation;
 	private String region;
 	private String prov = "";
-	private int indexProv;
 	
 	private TextView poinView;
 	private TextView answerTextView;
@@ -106,7 +104,6 @@ public class KuisActivity extends Activity {
 	    blinkAnimation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 	    
 	    Bundle extras = getIntent().getExtras();
-<<<<<<< HEAD
 	    region = extras.getString("nama_prov");
 	  
 	    //Set Title Activity
@@ -184,12 +181,8 @@ public class KuisActivity extends Activity {
 	    		}
 	    	}
 	    }
-=======
-	    region = extras.getString("region_prov");
-	    prov = extras.getString("nama_prov");
-	    indexProv = extras.getInt("id_prov");
->>>>>>> a97b8b957e18a1fc25ed3abdd419349ded4d28ad
 	    
+	    setTitle("Propinsi "+prov);
 	    //----------------------------------------------------------------------------------------------------
 	    
 	    questionNumberTextView = 
@@ -229,20 +222,19 @@ public class KuisActivity extends Activity {
 	} 
 	
 	private void resetQuiz() 
-	{   
-		DatabaseConnector dc = new DatabaseConnector(this);
-		fileNameList.clear();
-		Cursor c = dc.getGambar(indexProv);
-		
-		if(c.moveToFirst()){
-			do{
-				fileNameList.add(c.getString(c.getColumnIndex("nama")));
-				Log.d("here",c.getString(c.getColumnIndex("nama")));
-			}while(c.moveToNext());
-		}
-		else Log.e(TAG, "Error loading image file names");
-		
-		dc.close();
+	{      
+	    AssetManager assets = getAssets(); 
+	    fileNameList.clear();
+	    try 
+	    {             
+	    	String[] paths = assets.list(region);
+	        for (String path : paths) 
+	        	fileNameList.add(path.replace(".jpg", ""));
+	    } 
+	    catch (IOException e) 
+	    {
+	       Log.e(TAG, "Error loading image file names", e);
+	    } 
 	      
 	    correctAnswers = 0; 
 	    totalGuesses = 0;
@@ -270,7 +262,7 @@ public class KuisActivity extends Activity {
 	    
 	    int flagCounter = 1; 
 	    int numberOfFlags = fileNameList.size();
-	    while (flagCounter <= 10) 
+	    while (flagCounter <= 8) 
 	    {
 	       int randomIndex = random.nextInt(numberOfFlags);          
 	       String fileName = fileNameList.get(randomIndex);
@@ -292,7 +284,7 @@ public class KuisActivity extends Activity {
 	    questionNumberTextView.setText(
 	       getResources().getString(R.string.question) + " " + 
 	       (correctAnswers + 1) + " " + 
-	       getResources().getString(R.string.of) + " 10");
+	       getResources().getString(R.string.of) + " 8");
 	    
 	    AssetManager assets = getAssets(); // get app's AssetManager
 	    InputStream stream;
@@ -364,22 +356,18 @@ public class KuisActivity extends Activity {
 	    if (guess.equals(answer)) 
 	    {
 	       ++correctAnswers;
-<<<<<<< HEAD
 	       if(bantuan == 2){
 	    	   poin+=5;
 	    	   bantuan=0;
 	       }   
 	       else
 	    	   poin+=10;
-=======
-	       poin+=10;
->>>>>>> a97b8b957e18a1fc25ed3abdd419349ded4d28ad
 	       guessButton.setBackgroundColor(Color.GREEN);
 	       disableButtons();
 	       poinView.setText("Poin Anda : "+String.valueOf(poin));
 		   guessButton.startAnimation(blinkAnimation);
 		   answerList.clear();
-	       if (correctAnswers == 10) 
+	       if (correctAnswers == 8) 
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	          builder.setTitle("Anda Berhasil"); 
@@ -426,16 +414,6 @@ public class KuisActivity extends Activity {
 	       correct.setBackgroundColor(Color.GREEN);
 	       correct.startAnimation(blinkAnimation);
 	       answerList.clear();
-<<<<<<< HEAD
-=======
-	       
-	       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	       builder.setTitle(R.string.lose); 
-           
-	       builder.setMessage("Maaf, Jawaban Anda Salah");
-
-	       builder.setCancelable(false);
->>>>>>> a97b8b957e18a1fc25ed3abdd419349ded4d28ad
 	       
 	       if(nyawa==1 || bantuan==2){
 	    	   if(bantuan!=2){
@@ -445,8 +423,10 @@ public class KuisActivity extends Activity {
 		   		   ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
 		   		   bantuan4.setColorFilter(cf);
 	    	   }
-	    	   else
+	    	   else{
 	    		   bantuan=0;
+	    		   poin-=5;
+	    	   }
 	    	   ++correctAnswers;
 	    	   handler.postDelayed(
 	    	   new Runnable()
@@ -529,17 +509,93 @@ public class KuisActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)             
-	{                                              
+	{            
+	   // super.onCreateOptionsMenu(menu);                        
+	                                                              
+	   // menu.add(Menu.NONE, CHOICES_MENU_ID, Menu.NONE, R.string.choices);             
+	    //menu.add(Menu.NONE, REGIONS_MENU_ID, Menu.NONE, R.string.regions);             
+	                                                              
 	    return true; 
 	}
 	
 	@Override
-	public void onBackPressed(){	
+	public void onBackPressed(){
+		
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
-	{	  
+	{
+	      /*switch (item.getItemId()) 
+	      {
+	         case CHOICES_MENU_ID:
+	            final String[] possibleChoices = 
+	               getResources().getStringArray(R.array.guessesList);
+
+	            AlertDialog.Builder choicesBuilder = 
+	               new AlertDialog.Builder(this);         
+	            choicesBuilder.setTitle(R.string.choices);
+	         
+	            choicesBuilder.setItems(R.array.guessesList,                    
+	               new DialogInterface.OnClickListener()                    
+	               {                                                        
+	                  public void onClick(DialogInterface dialog, int item) 
+	                  {                                                     
+	                     guessRows = Integer.parseInt(                      
+	                        possibleChoices[item].toString()) / 3;          
+	                     resetQuiz();                      
+	                  }                               
+	               } 
+	            );                               
+	            AlertDialog choicesDialog = choicesBuilder.create();
+	            choicesDialog.show();          
+	            return true; 
+
+	         case REGIONS_MENU_ID:
+	            final String[] regionNames = 
+	               regionsMap.keySet().toArray(new String[regionsMap.size()]);
+	         
+	            boolean[] regionsEnabled = new boolean[regionsMap.size()];
+	            for (int i = 0; i < regionsEnabled.length; ++i)
+	               regionsEnabled[i] = regionsMap.get(regionNames[i]);
+	            AlertDialog.Builder regionsBuilder =
+	               new AlertDialog.Builder(this);
+	            regionsBuilder.setTitle(R.string.regions);
+	            
+	            String[] displayNames = new String[regionNames.length];
+	            for (int i = 0; i < regionNames.length; ++i)
+	               displayNames[i] = regionNames[i].replace('_', ' ');
+	         
+	            regionsBuilder.setMultiChoiceItems( 
+	               displayNames, regionsEnabled,
+	               new DialogInterface.OnMultiChoiceClickListener() 
+	               {
+	                  @Override
+	                  public void onClick(DialogInterface dialog, int which,
+	                     boolean isChecked) 
+	                  {
+	                   regionsMap.put(
+	                        regionNames[which].toString(), isChecked);
+	                  }
+	               } 
+	            ); 
+	          
+	            regionsBuilder.setPositiveButton(R.string.reset_quiz,
+	               new DialogInterface.OnClickListener()
+	               {
+	                  @Override
+	                  public void onClick(DialogInterface dialog, int button)
+	                  {
+	                     resetQuiz(); 
+	                  } 
+	               } 
+	            ); 
+	            AlertDialog regionsDialog = regionsBuilder.create();
+	            regionsDialog.show();
+	            return true;
+	      }*/
+		   
+		  
 		if (item.getItemId() == android.R.id.home ){
 			finish();
 		}
