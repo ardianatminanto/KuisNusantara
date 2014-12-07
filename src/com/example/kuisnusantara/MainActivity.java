@@ -78,20 +78,17 @@ public class MainActivity extends Activity implements ViewFactory{
 	//-------------------------------------------VIEW--------------------------------------------------------------
 	
 	private void tampilanProv(){
-		TextView viewProv = (TextView) findViewById(R.id.viewProv);
 		viewProv.setText(Integer.toString(prov+1)+ " / " +Integer.toString(listProv.length));
 	}
 	
 	private void namaProv(){
 		DatabaseConnector dc = new DatabaseConnector(this);
-		TextView namaProv = (TextView) findViewById(R.id.namaProv);
 		namaProv.setText(dc.namaProv(prov+1));
 		dc.close();
 	}
 	
 	private void namaIbukota(){
 		DatabaseConnector dc = new DatabaseConnector(this);
-		TextView ibuKota = (TextView) findViewById(R.id.textIbukota);
 		ibuKota.setText(dc.namaIbukota(prov+1));
 		dc.close();
 	}
@@ -99,8 +96,6 @@ public class MainActivity extends Activity implements ViewFactory{
 	private void tampilanGambar(){
 		DatabaseConnector dc = new DatabaseConnector(this);
 		int totalGambar =dc.jumlahGambarProv(prov+1), totalPoin = dc.maxPoin(prov+1);
-		TextView jumlahGambar = (TextView) findViewById(R.id.textJumlahGambar);
-		TextView maksPoin = (TextView) findViewById(R.id.textMaksPoin);
 		jumlahGambar.setText(Integer.toString(totalGambar));
 		maksPoin.setText(Integer.toString(totalPoin));
 		dc.close();
@@ -119,12 +114,24 @@ public class MainActivity extends Activity implements ViewFactory{
 	private int prov = 0;
 	LinearLayout gambarProvinsi;
 	private ImageSwitcher imageSwitcher;
+	private TextView jumlahGambar;
+	private TextView maksPoin;
+	private TextView ibuKota;
+	private TextView namaProv;
+	private TextView viewProv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		DatabaseConnector dc = new DatabaseConnector(this);
+		
+		jumlahGambar = (TextView) findViewById(R.id.textJumlahGambar);
+		maksPoin = (TextView) findViewById(R.id.textMaksPoin);
+		ibuKota = (TextView) findViewById(R.id.textIbukota);
+		namaProv = (TextView) findViewById(R.id.namaProv);
+		viewProv = (TextView) findViewById(R.id.viewProv);
+		
 		prov = 0;
 		Cursor c = dc.getProv();
 		listProv = new String[c.getCount()];
@@ -183,7 +190,9 @@ public class MainActivity extends Activity implements ViewFactory{
 	public void masuk(View v){
 		//Toast.makeText(getApplicationContext(), listNamaProv[0], Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(MainActivity.this, KuisActivity.class);
-		i.putExtra("nama_prov", listProv[prov]);
+		i.putExtra("nama_prov", namaProv.getText().toString());
+		i.putExtra("region", listProv[prov]);
+		i.putExtra("index_prov", prov+1);
 		Log.d("send", listProv[prov]);//
 		startActivity(i);
 	}

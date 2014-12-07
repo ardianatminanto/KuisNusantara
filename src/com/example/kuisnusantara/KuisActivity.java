@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -62,6 +63,7 @@ public class KuisActivity extends Activity {
 	private Animation blinkAnimation;
 	private String region;
 	private String prov = "";
+	private int indexProv;
 	
 	private TextView poinView;
 	private TextView answerTextView;
@@ -109,83 +111,9 @@ public class KuisActivity extends Activity {
 	    blinkAnimation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 	    
 	    Bundle extras = getIntent().getExtras();
-	    region = extras.getString("nama_prov");
-	  
-	    //Set Title Activity
-	    if(region.length()==3){
-	    	if(region.charAt(0)=='n'&&region.charAt(2)=='b')
-	    		prov="Nusa Tenggara Barat";
-	    	else if(region.charAt(0)=='n'&&region.charAt(2)=='t')
-	    		prov="Nusa Tenggara Timur";
-	    	else
-	    		prov = "DI Yogyakarta";
-	    }
-	    else{
-	    	if(region.substring(0, 3).equals("sum")){
-	    		if(region.substring(3, region.length()).equals("ut"))
-	    			prov="Sumatra Utara";
-	    		else if(region.substring(3, region.length()).equals("sel"))
-	    			prov="Sumatra Selatan";
-	    		else if(region.substring(3, region.length()).equals("bar"))
-	    			prov="Sumatra Barat";
-	    	}
-	    	else if(region.substring(0, 3).equals("kep")){
-	    		prov+="Kep.";
-	    		if(region.substring(4, region.length()).equals("babel"))
-	    			prov+=" Bangka Belitung";
-	    		else
-	    			prov+=" Riau";
-	    	}
-	    	else if (region.substring(0, 3).equals("dki")){
-	    		prov+="DKI Jakarta";
-	    	}
-	    	else if(region.substring(0, 3).equals("kal")){
-	    		if(region.substring(3, region.length()).equals("teng"))
-	    			prov="Kalimantan Tengah";
-	    		else if(region.substring(3, region.length()).equals("sel"))
-	    			prov="Kalimantan Selatan";
-	    		else if(region.substring(3, region.length()).equals("bar"))
-	    			prov="Kalimantan Barat";
-	    		else if(region.substring(3, region.length()).equals("tim"))
-	    			prov="Kalimantan Timur";
-	    	} 
-	    	else if(region.substring(0, 2).equals("ja")){
-	    		if(region.charAt(2)!='m'){
-	    			if(region.substring(2, region.length()).equals("bar"))
-	    				prov="Jawa Barat";
-	    			else if(region.substring(2, region.length()).equals("teng"))
-	    				prov="Jawa Tengah";
-	    			else if(region.substring(2, region.length()).equals("tim"))
-	    				prov="Jawa Timur";
-	    		}
-	    		else
-	    			prov="Jambi";
-	    	}
-	    	else if(region.substring(0, 3).equals("sul")){
-	    		if(region.substring(3, region.length()).equals("ut"))
-	    			prov="Sulawesi Utara";
-	    		else if(region.substring(3, region.length()).equals("teng"))
-	    			prov="Sulawesi Tengah";
-	    		else if(region.substring(3, region.length()).equals("sel"))
-	    			prov="Sulawesi Selatan";
-	    		else if(region.substring(3, region.length()).equals("bar"))
-	    			prov="Sulawesi Barat";
-	    		else if(region.substring(3, region.length()).equals("tra"))
-	    			prov="Sulawesi Tenggara";
-	    	}
-	    	else if(region.equals("malut"))
-	    		prov="Maluku Utara";
-	    	else if(region.equals("papbar"))
-	    		prov="Papua Barat";
-	    	else{
-	    		for(int i=0;i<region.length();i++){
-			    	if(i==0)
-			    		prov+=Character.toUpperCase(region.charAt(i));
-			    	else
-			    		prov+=region.charAt(i);
-	    		}
-	    	}
-	    }
+	    region = extras.getString("region");
+	    prov = extras.getString("nama_prov");
+	    indexProv = extras.getInt("index_prov");
 	    
 	    setTitle("Propinsi "+prov);
 	    //----------------------------------------------------------------------------------------------------
@@ -228,18 +156,16 @@ public class KuisActivity extends Activity {
 	
 	private void resetQuiz() 
 	{      
-	    AssetManager assets = getAssets(); 
-	    fileNameList.clear();
-	    try 
-	    {             
-	    	String[] paths = assets.list(region);
-	        for (String path : paths) 
-	        	fileNameList.add(path.replace(".jpg", ""));
-	    } 
-	    catch (IOException e) 
-	    {
-	       Log.e(TAG, "Error loading image file names", e);
-	    } 
+		DatabaseConnector dc = new DatabaseConnector(this);
+		fileNameList.clear();
+		Cursor c = dc.getGambar(indexProv);
+		
+		if(c.moveToFirst()){
+			do{
+				fileNameList.add(c.getString(c.getColumnIndex("nama")));
+			}while(c.moveToNext());
+		}
+		else Log.e(TAG, "Error loading image file names");
 	      
 	    correctAnswers = 0; 
 	    totalGuesses = 0;
