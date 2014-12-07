@@ -52,6 +52,8 @@ public class KuisActivity extends Activity {
 	private List<String> fileNameList; // flag file names
 	private List<String> quizCountriesList;
 	private List<String> answerList;
+	private List<String> choiceList;
+	
 	private String correctAnswer; 
 	private int totalGuesses; // number of guesses made
 	private int correctAnswers; // number of correct guesses
@@ -96,6 +98,7 @@ public class KuisActivity extends Activity {
 	    fileNameList = new ArrayList<String>();
 	    quizCountriesList = new ArrayList<String>();
 	    answerList = new ArrayList<String>();
+	    choiceList = new ArrayList<String>();
 	    guessRows = 4; 
 	    random = new Random(); 
 	    handler = new Handler(); 
@@ -237,6 +240,12 @@ public class KuisActivity extends Activity {
 	      
 	    int correct = fileNameList.indexOf(correctAnswer);
 	    fileNameList.add(fileNameList.remove(correct));
+	    
+	    DatabaseConnector dc = new DatabaseConnector(this);
+	    choiceList.clear();
+	    choiceList = dc.getChoice(correctAnswer);
+	    for(int i = 0; i < choiceList.size(); i++)
+	    	Log.d("choice", choiceList.get(i));
 
 	    LayoutInflater inflater = (LayoutInflater) getSystemService(
 	       Context.LAYOUT_INFLATER_SERVICE);
@@ -250,10 +259,12 @@ public class KuisActivity extends Activity {
 	       {
 	          Button newGuessButton = 
 	             (Button) inflater.inflate(R.layout.guess_button, null);
-	          String fileName = fileNameList.get((row * 1) + column);
+	          //String fileName = fileNameList.get((row * 1) + column);
+	          String fileName = choiceList.get(row);
 	          newGuessButton.setWidth(50);
 	          newGuessButton.setHeight(50);
-	          newGuessButton.setText(getCountryName(fileName));
+	          //newGuessButton.setText(getCountryName(fileName));
+	          newGuessButton.setText(fileName);
 	          newGuessButton.setId(row);
 	          newGuessButton.setOnClickListener(guessButtonListener);
 	          newGuessButton.setSingleLine(true);

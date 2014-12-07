@@ -1,6 +1,8 @@
 package com.example.kuisnusantara;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -593,6 +595,31 @@ public class DatabaseConnector {
 	
 	public Cursor getGambar(int indexProv){
 		return database.rawQuery("SELECT * FROM " +tabelGambar+ " WHERE id_prov = " +indexProv , null);
+	}
+	
+	public List<String> getChoice(String correctAnswer){
+		correctAnswer = getCountryName(correctAnswer);
+		Cursor c = database.rawQuery("SELECT a.jawaban FROM " +
+				"" +tabelGambar+ " a WHERE a.kategori = " +
+				"(SELECT b.kategori FROM " +tabelGambar+ " b WHERE b.jawaban = '" +correctAnswer+ "' )" , null);
+		List<String> choice = new ArrayList<String>();
+		if(c.moveToFirst()){
+			do{
+				if(!correctAnswer.equals(c.getString(c.getColumnIndex("jawaban"))))
+				{
+					choice.add(c.getString(c.getColumnIndex("jawaban")));
+					Log.d("get choice", c.getString(c.getColumnIndex("jawaban")));
+				}
+				else Log.d("right choice", c.getString(c.getColumnIndex("jawaban")));
+			}while(c.moveToNext());
+		}
+		else Log.d("here", "error");
+		return choice;
+	}
+	
+	private String getCountryName(String name)
+	{
+	    return name.substring(name.indexOf('-') + 1).replace('_', ' ');
 	}
 	
 	//--------------------------------------------------OWN FUNCTION----------------------------------------------------------------
