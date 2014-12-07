@@ -15,6 +15,7 @@ import com.example.kuisnusantara.R.color;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -64,7 +66,10 @@ public class KuisActivity extends Activity {
 	private TextView poinView;
 	private TextView answerTextView;
 	private TextView questionNumberTextView;
-	private ImageView flagImageView; 
+	
+	//gambar soal
+	private ImageView flagImageView;
+	
 	private TableLayout buttonTableLayout;
 	
 	//hint
@@ -428,15 +433,36 @@ public class KuisActivity extends Activity {
 	    		   poin-=5;
 	    	   }
 	    	   ++correctAnswers;
-	    	   handler.postDelayed(
-	    	   new Runnable()
-			   { 
-			     @Override
-			     public void run()
-			     {
-			        loadNextFlag();
-			     }
-			   }, 1000);
+	    	   if (correctAnswers == 8) 
+		       {
+		          AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		          builder.setTitle("Anda Berhasil"); 
+		          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
+
+		          builder.setCancelable(false); 
+		          builder.setPositiveButton(R.string.reset_quiz,
+		             new DialogInterface.OnClickListener()                
+		             {                                                       
+		                public void onClick(DialogInterface dialog, int id) 
+		                {
+		                   resetQuiz();                                      
+		                }                              
+		             }
+		          ); 
+		          AlertDialog resetDialog = builder.create();
+		          resetDialog.show();
+		       } 
+		       else
+		       {  handler.postDelayed(
+		             new Runnable()
+		             { 
+		                @Override
+		                public void run()
+		                {
+		                   loadNextFlag();
+		                }
+		             }, 1000); 
+		       }
 	       }
 	       else{
 	    	   //Message Show main lagi atau tidak
@@ -601,7 +627,26 @@ public class KuisActivity extends Activity {
 		}
 	    return super.onOptionsItemSelected(item);
 	} 
-	   
+	
+	//onClick Full Screen
+	/*private OnClickListener fullScreenListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if(isImageFitToScreen){
+				isImageFitToScreen = false;
+				flagImageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                flagImageView.setAdjustViewBounds(true);
+			}
+			else{
+				isImageFitToScreen = true;
+				flagImageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                flagImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+			}
+		}
+	};*/
+	
 	private OnClickListener guessButtonListener = new OnClickListener() 
 	{
 	    @Override
@@ -658,15 +703,36 @@ public class KuisActivity extends Activity {
 			
 			//skip question
 			++correctAnswers;
-			handler.postDelayed(
-			new Runnable()
-		    { 
-				@Override
-				public void run()
-				{
-					loadNextFlag();
-				}
-		    }, 100);
+			if (correctAnswers == 8) 
+			{
+	          AlertDialog.Builder builder = new AlertDialog.Builder(KuisActivity.this);
+	          builder.setTitle("Anda Berhasil"); 
+	          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
+
+	          builder.setCancelable(false); 
+	          builder.setPositiveButton(R.string.reset_quiz,
+	             new DialogInterface.OnClickListener()                
+	             {                                                       
+	                public void onClick(DialogInterface dialog, int id) 
+	                {
+	                   resetQuiz();                                      
+	                }                              
+	             }
+	          ); 
+	          AlertDialog resetDialog = builder.create();
+	          resetDialog.show();
+			} 
+			else
+			{  handler.postDelayed(
+	             new Runnable()
+	             { 
+	                @Override
+	                public void run()
+	                {
+	                   loadNextFlag();
+	                }
+	             }, 100); 
+			}
 			answerList.clear();
 		}
 	};
