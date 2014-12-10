@@ -27,20 +27,22 @@
       android:layout_marginBottom="10dp" android:layout_marginTop="10dp"
       android:textColor="@color/text_color" 
       android:textSize="@dimen/text_size" android:layout_gravity="center" 
-      android:gravity="center"></TextView>
+      android:gravity="center"
+      android:textStyle="bold"></TextView>
       
    <ImageView android:id="@+id/flagImageView"
       android:adjustViewBounds="false" 
       android:layout_width="@dimen/flag_width"
-      android:layout_height="@dimen/flag_height"></ImageView>
+      android:layout_height="@dimen/flag_height"
+      android:layout_marginBottom="20dp"></ImageView>
       
-   <TextView android:id="@+id/guessCountryTextView"
+    <!-- <TextView android:id="@+id/guessCountryTextView"
       android:layout_width="wrap_content" 
       android:layout_height="wrap_content"
-      android:layout_marginBottom="10dp" android:layout_marginTop="10dp"
+      android:layout_marginBottom="5dp" android:layout_marginTop="5dp"
       android:text="@string/guess_answer" 
       android:textColor="@color/text_color"
-      android:textSize="@dimen/text_size"></TextView>
+      android:textSize="@dimen/text_size"></TextView> -->
       
    <TableLayout android:id="@+id/buttonTableLayout" 
       android:layout_width="match_parent"
@@ -128,23 +130,5 @@
 		       android:src="@drawable/hint_x2" />        
         </TableRow>
    </TableLayout>
-	
-   <!-- <ImageView
-       android:id="@+id/bantuan2"
-       android:layout_width="50dp"
-       android:layout_height="50dp"
-       android:adjustViewBounds="false"
-       android:background="@color/background_color"
-       android:src="@drawable/bantuan2" /> -->
-   
-    <!-- <LinearLayout
-    android:id="@+id/linearLayoutBantuan"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:gravity="center_horizontal"
-    android:orientation="horizontal">
-    	 
-	</LinearLayout> -->
 
 </LinearLayout>

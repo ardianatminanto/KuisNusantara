@@ -214,11 +214,11 @@ public class KuisActivity extends Activity {
 	    String nextImageName = quizCountriesList.remove(0);
 	    correctAnswer = nextImageName;
 
+	    String[] namaFile = nextImageName.split("-");
+
 	    //answerTextView.setText("");  
 	    questionNumberTextView.setText(
-	       getResources().getString(R.string.question) + " " + 
-	       (correctAnswers + 1) + " " + 
-	       getResources().getString(R.string.of) + " 8");
+	       namaFile[0]+" - "+prov);
 	    
 	    AssetManager assets = getAssets(); // get app's AssetManager
 	    InputStream stream;
@@ -368,6 +368,7 @@ public class KuisActivity extends Activity {
 	    	   else{
 	    		   bantuan=0;
 	    		   poin-=5;
+	    		   poinView.setText("Poin Anda : "+String.valueOf(poin));
 	    	   }
 	    	   ++correctAnswers;
 	    	   if (correctAnswers == 8) 
@@ -432,6 +433,7 @@ public class KuisActivity extends Activity {
 		       AlertDialog resetDialog = builder.create();
 		       resetDialog.show();
 	       }
+	       disableButtons();
 	    } 
 	} 
 
