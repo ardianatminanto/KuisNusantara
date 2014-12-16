@@ -244,8 +244,6 @@ public class KuisActivity extends Activity {
 	    DatabaseConnector dc = new DatabaseConnector(this);
 	    choiceList.clear();
 	    choiceList = dc.getChoice(correctAnswer);
-	    for(int i = 0; i < choiceList.size(); i++)
-	    	Log.d("choice", choiceList.get(i));
 
 	    LayoutInflater inflater = (LayoutInflater) getSystemService(
 	       Context.LAYOUT_INFLATER_SERVICE);

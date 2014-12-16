@@ -193,7 +193,6 @@ public class MainActivity extends Activity implements ViewFactory{
 		i.putExtra("nama_prov", namaProv.getText().toString());
 		i.putExtra("region", listProv[prov]);
 		i.putExtra("index_prov", prov+1);
-		Log.d("send", listProv[prov]);//
 		startActivity(i);
 	}
 	

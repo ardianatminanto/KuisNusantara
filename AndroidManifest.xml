@@ -14,10 +14,8 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:name=".MenuAwal"
+            android:label="@string/title_activity_menu_awal" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +23,27 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
             android:name=".KuisActivity"
             android:label="@string/title_activity_kuis"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".MenuHome"
+            android:label="@string/title_activity_menu_home" >
+        </activity>
+        <activity
+            android:name=".MenuAbout"
+            android:label="@string/title_activity_menu_about" >
+        </activity>
+        <activity
+            android:name=".MenuHelp"
+            android:label="@string/title_activity_menu_help" >
         </activity>
     </application>
 
