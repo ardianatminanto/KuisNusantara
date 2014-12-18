@@ -6,11 +6,14 @@ import java.io.InputStream;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -31,7 +34,7 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
 public class MainActivity extends Activity implements ViewFactory{
-	
+	private int index = 0;
 	private int hitungUkuranSample(Options options, int lebarDiperlukan, int tinggiDiperlukan){
 		final int lebar = options.outWidth;
 		final int tinggi = options.outHeight;
@@ -60,10 +63,10 @@ public class MainActivity extends Activity implements ViewFactory{
 	}
 	
 	private ImageView insertPhoto(InputStream is) {
-		Bitmap bm = decodeContohBitmapDariAlamatPath(is, 250, 250);
+		Bitmap bm = decodeContohBitmapDariAlamatPath(is, 500, 500);
 		
 		final ImageView imageView = new ImageView(getApplicationContext());
-		imageView.setLayoutParams(new LayoutParams(250, 250));
+		imageView.setLayoutParams(new LayoutParams(500, 500));
 		imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 		
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
@@ -96,7 +99,7 @@ public class MainActivity extends Activity implements ViewFactory{
 	private void tampilanGambar(){
 		DatabaseConnector dc = new DatabaseConnector(this);
 		int totalGambar =dc.jumlahGambarProv(prov+1), totalPoin = dc.maxPoin(prov+1);
-		jumlahGambar.setText(Integer.toString(totalGambar));
+		jumlahGambar.setText("100");
 		maksPoin.setText(Integer.toString(totalPoin));
 		dc.close();
 	}
@@ -132,7 +135,15 @@ public class MainActivity extends Activity implements ViewFactory{
 		namaProv = (TextView) findViewById(R.id.namaProv);
 		viewProv = (TextView) findViewById(R.id.viewProv);
 		
-		prov = 0;
+		MenuHome.mPlayer.start();
+		
+		Bundle extras = getIntent().getExtras();
+		index = extras.getInt("index");
+		
+		if(index>0)
+			prov = index - 1;
+		else
+			prov = 0;
 		Cursor c = dc.getProv();
 		listProv = new String[c.getCount()];
 		int numProv = 0;
@@ -193,9 +204,43 @@ public class MainActivity extends Activity implements ViewFactory{
 		i.putExtra("nama_prov", namaProv.getText().toString());
 		i.putExtra("region", listProv[prov]);
 		i.putExtra("index_prov", prov+1);
+		MenuHome.mPlayer.pause();
 		startActivity(i);
+
+	}
+
+	public void reset(View v){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reset Skor"); 
+        builder.setMessage("Apakah Anda yakin akan mengulang skor Anda?");
+
+        builder.setCancelable(false); 
+        builder.setPositiveButton("Ya",
+           new DialogInterface.OnClickListener()                
+           {                                                       
+              public void onClick(DialogInterface dialog, int id) 
+              {
+                 //resetQuiz();
+              	DatabaseConnector dc = new DatabaseConnector(MainActivity.this);
+              	dc.updatePoin(0, prov+1);
+              	int totalPoin = dc.maxPoin(prov+1);
+        		maksPoin.setText(Integer.toString(totalPoin));
+              	dc.close();
+              }                              
+           }
+        );
+        builder.setNegativeButton("Tidak", null);
+        AlertDialog resetDialog = builder.create();
+        resetDialog.show();
 	}
 	
+	public void back(View v){
+		Intent i = new Intent(MainActivity.this, MenuHome.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		i.putExtra("EXIT", true);
+		startActivity(i);
+
+	}
 	//---------------------------------------BUTTON-----------------------------------------------------------------------------------
 
 	@Override
@@ -223,5 +268,10 @@ public class MainActivity extends Activity implements ViewFactory{
 						LinearLayout.LayoutParams.MATCH_PARENT,
 						LayoutParams.MATCH_PARENT));
 		return imageView;
+	}
+	
+	@Override
+	public void onBackPressed(){
+		
 	}
 }

@@ -26,6 +26,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -101,7 +102,7 @@ public class KuisActivity extends Activity {
 	    choiceList = new ArrayList<String>();
 	    guessRows = 4; 
 	    random = new Random(); 
-	    handler = new Handler(); 
+	    handler = new Handler();
 	    
 	    shakeAnimation = 
 	       AnimationUtils.loadAnimation(this, R.anim.incorrect_shake); 
@@ -196,7 +197,7 @@ public class KuisActivity extends Activity {
 	    
 	    int flagCounter = 1; 
 	    int numberOfFlags = fileNameList.size();
-	    while (flagCounter <= 8) 
+	    while (flagCounter <= 10) 
 	    {
 	       int randomIndex = random.nextInt(numberOfFlags);          
 	       String fileName = fileNameList.get(randomIndex);
@@ -302,27 +303,37 @@ public class KuisActivity extends Activity {
 	       }   
 	       else
 	    	   poin+=10;
+	       MediaPlayer mPlayer = MediaPlayer.create(this, R.raw.yay);
+	       mPlayer.setVolume(1, 1);
+		   mPlayer.setLooping(false);
+		   mPlayer.start();
 	       guessButton.setBackgroundColor(Color.GREEN);
 	       disableButtons();
 	       poinView.setText("Poin Anda : "+String.valueOf(poin));
 		   guessButton.startAnimation(blinkAnimation);
 		   answerList.clear();
-	       if (correctAnswers == 8) 
+	       if (correctAnswers == 10) 
 	       {
 	          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	          builder.setTitle("Anda Berhasil"); 
 	          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
 
 	          builder.setCancelable(false); 
-	          builder.setPositiveButton(R.string.reset_quiz,
+	          builder.setPositiveButton("Kembali Ke Menu",
 	             new DialogInterface.OnClickListener()                
 	             {                                                       
 	                public void onClick(DialogInterface dialog, int id) 
 	                {
-	                   resetQuiz();                                      
+	                   //resetQuiz();
+	                	DatabaseConnector dc = new DatabaseConnector(KuisActivity.this);
+	                	dc.updatePoin(poin, indexProv);
+	                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
+	                	i.putExtra("index", indexProv);
+		  			    startActivity(i);
+		  			    dc.close();
 	                }                              
 	             }
-	          ); 
+	          );
 	          AlertDialog resetDialog = builder.create();
 	          resetDialog.show();
 	       } 
@@ -335,7 +346,7 @@ public class KuisActivity extends Activity {
 	                {
 	                   loadNextFlag();
 	                }
-	             }, 1000); 
+	             }, mPlayer.getDuration()); 
 	       }
 	    } 
 	    else  
@@ -355,6 +366,11 @@ public class KuisActivity extends Activity {
 	       correct.startAnimation(blinkAnimation);
 	       answerList.clear();
 	       
+	       MediaPlayer mPlayer = MediaPlayer.create(this, R.raw.wrong);
+	       mPlayer.setVolume(1, 1);
+		   mPlayer.setLooping(false);
+		   mPlayer.start();
+	       
 	       if(nyawa==1 || bantuan==2){
 	    	   if(bantuan!=2){
 	    		   nyawa--;
@@ -369,7 +385,7 @@ public class KuisActivity extends Activity {
 	    		   poinView.setText("Poin Anda : "+String.valueOf(poin));
 	    	   }
 	    	   ++correctAnswers;
-	    	   if (correctAnswers == 8) 
+	    	   if (correctAnswers == 10) 
 		       {
 		          AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		          builder.setTitle("Anda Berhasil"); 
@@ -397,7 +413,7 @@ public class KuisActivity extends Activity {
 		                {
 		                   loadNextFlag();
 		                }
-		             }, 1000); 
+		             }, mPlayer.getDuration()); 
 		       }
 	       }
 	       else{
@@ -424,6 +440,7 @@ public class KuisActivity extends Activity {
 		                public void onClick(DialogInterface dialog, int id) 
 		                {
 		                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
+		                	i.putExtra("index", indexProv);
 			  			    startActivity(i);                                      
 		                }                              
 		             }	  	  
@@ -623,6 +640,7 @@ public class KuisActivity extends Activity {
 			
 			//set bantuan menjadi 2
 			bantuan = 2;
+			bantuan2.setOnClickListener(null);
 		}
 	};
 	
@@ -640,7 +658,7 @@ public class KuisActivity extends Activity {
 			
 			//skip question
 			++correctAnswers;
-			if (correctAnswers == 8) 
+			if (correctAnswers == 10) 
 			{
 	          AlertDialog.Builder builder = new AlertDialog.Builder(KuisActivity.this);
 	          builder.setTitle("Anda Berhasil"); 
@@ -671,6 +689,7 @@ public class KuisActivity extends Activity {
 	             }, 100); 
 			}
 			answerList.clear();
+			bantuan3.setOnClickListener(null);
 		}
 	};
 }

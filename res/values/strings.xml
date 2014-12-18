@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">KuisNusantara</string>
+    <string name="app_name">Kuis Nusantara</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_kuis">KuisActivity</string>
@@ -36,7 +36,7 @@
 
     <string name="lose">Anda Kalah</string>
     <string name="title_activity_menu_home">MenuHome</string>
-    <string name="title_activity_menu_awal">MenuAwal</string>
+    <string name="title_activity_menu_awal">Kuis Nusantara</string>
     <string name="title_activity_menu_about">MenuAbout</string>
     <string name="title_activity_menu_help">MenuHelp</string>
 
