@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MenuHome extends Activity{
 	
@@ -24,21 +25,25 @@ public class MenuHome extends Activity{
 	private ImageButton imageSound;
 	private ImageButton keluar;
 	public static boolean sound = true;
-	//private MusicServices mServ;
-	public static MediaPlayer mPlayer;
+	private boolean status;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		imageSound = (ImageButton) findViewById(R.id.imageButton5);
-		keluar = (ImageButton)findViewById(R.id.imageButton4);
-		//imageSound.setOnClickListener(imgHandler);
 		setContentView(R.layout.activity_menu_home);
-		mPlayer = MediaPlayer.create(this, R.raw.indonesia_raya);
-		mPlayer.setVolume(1, 1);
-		mPlayer.setLooping(true);
-		mPlayer.start();
+		Bundle extras = getIntent().getExtras();
+		status = extras.getBoolean("status");
+		imageSound = (ImageButton)findViewById(R.id.imageButton5);
+		if(status){
+			MenuAwal.mPlayer.setVolume(1, 1);
+			MenuAwal.mPlayer.setLooping(true);
+			MenuAwal.mPlayer.start();
+		}
+		if(!sound){
+			imageSound.setBackgroundResource(R.drawable.mute);
+		}
+		else
+			imageSound.setBackgroundResource(R.drawable.sound);
 	}
 
 	@Override
@@ -64,8 +69,8 @@ public class MenuHome extends Activity{
 	public void onStop() {
 	    super.onStop();
 	    if (!shouldPlay) { // it won't pause music if shouldPlay is true
-	        mPlayer.pause();
-	        mPlayer = null;
+	    	MenuAwal.mPlayer.pause();
+	    	MenuAwal.mPlayer = null;
 	    }
 	}
 	
@@ -99,14 +104,14 @@ public class MenuHome extends Activity{
 		if(sound){
 			ImageButton aButton = (ImageButton)v;
 			aButton.setBackgroundResource(R.drawable.mute);
-			mPlayer.setVolume(0, 0);
+			MenuAwal.mPlayer.setVolume(0, 0);
 			sound = false;
 		}
 		else {
 			//imageSound.setBackgroundResource(R.drawable.sound);
 			ImageButton bButton = (ImageButton)v;
 			bButton.setBackgroundResource(R.drawable.sound);
-			mPlayer.setVolume(1, 1);
+			MenuAwal.mPlayer.setVolume(1, 1);
 			sound = true;
 		}
 	}

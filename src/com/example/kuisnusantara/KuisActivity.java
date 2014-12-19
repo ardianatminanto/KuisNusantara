@@ -304,7 +304,10 @@ public class KuisActivity extends Activity {
 	       else
 	    	   poin+=10;
 	       MediaPlayer mPlayer = MediaPlayer.create(this, R.raw.yay);
-	       mPlayer.setVolume(1, 1);
+	       if(MenuHome.sound == true)
+	    	   mPlayer.setVolume(1, 1);
+	       else
+	    	   mPlayer.setVolume(0, 0);
 		   mPlayer.setLooping(false);
 		   mPlayer.start();
 	       guessButton.setBackgroundColor(Color.GREEN);
@@ -367,7 +370,10 @@ public class KuisActivity extends Activity {
 	       answerList.clear();
 	       
 	       MediaPlayer mPlayer = MediaPlayer.create(this, R.raw.wrong);
-	       mPlayer.setVolume(1, 1);
+	       if(MenuHome.sound == true)
+	    	   mPlayer.setVolume(1, 1);
+	       else
+	    	   mPlayer.setVolume(0, 0);
 		   mPlayer.setLooping(false);
 		   mPlayer.start();
 	       

@@ -15,7 +15,8 @@
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name=".MenuAwal"
-            android:label="@string/title_activity_menu_awal" >
+            android:label="@string/title_activity_menu_awal"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,15 +36,18 @@
         </activity>
         <activity
             android:name=".MenuHome"
-            android:label="@string/title_activity_menu_home" >
+            android:label="@string/title_activity_menu_home"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MenuAbout"
-            android:label="@string/title_activity_menu_about" >
+            android:label="@string/title_activity_menu_about"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MenuHelp"
-            android:label="@string/title_activity_menu_help" >
+            android:label="@string/title_activity_menu_help"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

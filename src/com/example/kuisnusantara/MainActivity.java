@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements ViewFactory{
 		namaProv = (TextView) findViewById(R.id.namaProv);
 		viewProv = (TextView) findViewById(R.id.viewProv);
 		
-		MenuHome.mPlayer.start();
+		MenuAwal.mPlayer.start();
 		
 		Bundle extras = getIntent().getExtras();
 		index = extras.getInt("index");
@@ -204,7 +204,7 @@ public class MainActivity extends Activity implements ViewFactory{
 		i.putExtra("nama_prov", namaProv.getText().toString());
 		i.putExtra("region", listProv[prov]);
 		i.putExtra("index_prov", prov+1);
-		MenuHome.mPlayer.pause();
+		MenuAwal.mPlayer.pause();
 		startActivity(i);
 
 	}
@@ -238,6 +238,7 @@ public class MainActivity extends Activity implements ViewFactory{
 		Intent i = new Intent(MainActivity.this, MenuHome.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		i.putExtra("EXIT", true);
+		i.putExtra("status", false);
 		startActivity(i);
 
 	}

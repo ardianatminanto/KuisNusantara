@@ -3,6 +3,7 @@ package com.example.kuisnusantara;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 public class MenuAwal extends Activity {
 
 	private Handler handler =  new Handler();
+	public static MediaPlayer mPlayer;
 	private ProgressBar progressBar;
 	private int load = 0;
 	protected static final int TIMER_RUNTIME = 10000;
@@ -24,7 +26,7 @@ public class MenuAwal extends Activity {
 		setContentView(R.layout.activity_menu_awal);
 		
 		progressBar = (ProgressBar)findViewById(R.id.progressBar1);
-		
+		mPlayer = MediaPlayer.create(this, R.raw.indonesia_raya);
 		final Thread timerThread = new Thread() {
 	          @Override
 	          public void run() {
@@ -75,6 +77,7 @@ public class MenuAwal extends Activity {
 	           final int progress = progressBar.getMax() * timePassed / TIMER_RUNTIME;
 	           if(progress==progressBar.getMax()){
 	        	   Intent i = new Intent(MenuAwal.this, MenuHome.class);
+	        	   i.putExtra("status", true);
 					startActivity(i);
 					finish();
 	           }
