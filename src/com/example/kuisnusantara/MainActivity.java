@@ -233,15 +233,7 @@ public class MainActivity extends Activity implements ViewFactory{
         AlertDialog resetDialog = builder.create();
         resetDialog.show();
 	}
-	
-	public void back(View v){
-		Intent i = new Intent(MainActivity.this, MenuHome.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		i.putExtra("EXIT", true);
-		i.putExtra("status", false);
-		startActivity(i);
 
-	}
 	//---------------------------------------BUTTON-----------------------------------------------------------------------------------
 
 	@Override
@@ -273,6 +265,10 @@ public class MainActivity extends Activity implements ViewFactory{
 	
 	@Override
 	public void onBackPressed(){
-		
+		Intent i = new Intent(MainActivity.this, MenuHome.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		i.putExtra("EXIT", true);
+		i.putExtra("status", false);
+		startActivity(i);
 	}
 }

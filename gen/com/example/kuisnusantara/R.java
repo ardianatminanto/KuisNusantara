@@ -1120,7 +1120,7 @@ containing a value of this type.
         public static final int tentang=0x7f02006f;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f06005f;
+        public static final int RelativeLayout1=0x7f06005e;
         public static final int action_bar=0x7f06001c;
         public static final int action_bar_activity_content=0x7f060015;
         public static final int action_bar_container=0x7f06001b;
@@ -1132,7 +1132,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_settings=0x7f060064;
+        public static final int action_settings=0x7f060063;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int bantuan1=0x7f060048;
@@ -1142,7 +1142,6 @@ containing a value of this type.
         public static final int beginning=0x7f060011;
         public static final int button1=0x7f06005b;
         public static final int button2=0x7f06005c;
-        public static final int button3=0x7f06005d;
         public static final int buttonTableLayout=0x7f060040;
         public static final int checkbox=0x7f06002d;
         public static final int collapseActionView=0x7f06000d;
@@ -1162,9 +1161,9 @@ containing a value of this type.
         public static final int image=0x7f060027;
         public static final int imageButton1=0x7f060052;
         public static final int imageButton2=0x7f060051;
-        public static final int imageButton3=0x7f060060;
-        public static final int imageButton4=0x7f060061;
-        public static final int imageButton5=0x7f060062;
+        public static final int imageButton3=0x7f06005f;
+        public static final int imageButton4=0x7f060060;
+        public static final int imageButton5=0x7f060061;
         public static final int imageSwitcher1=0x7f06004f;
         public static final int linearLayout=0x7f06003c;
         public static final int listMode=0x7f060001;
@@ -1172,10 +1171,10 @@ containing a value of this type.
         public static final int middle=0x7f060012;
         public static final int namaProv=0x7f060053;
         public static final int never=0x7f060009;
-        public static final int newGuessButton=0x7f060063;
+        public static final int newGuessButton=0x7f060062;
         public static final int none=0x7f060010;
         public static final int normal=0x7f060000;
-        public static final int progressBar1=0x7f06005e;
+        public static final int progressBar1=0x7f06005d;
         public static final int progress_circular=0x7f060018;
         public static final int progress_horizontal=0x7f060019;
         public static final int questionNumberTextView=0x7f06003e;

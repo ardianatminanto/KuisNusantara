@@ -666,22 +666,28 @@ public class KuisActivity extends Activity {
 			++correctAnswers;
 			if (correctAnswers == 10) 
 			{
-	          AlertDialog.Builder builder = new AlertDialog.Builder(KuisActivity.this);
-	          builder.setTitle("Anda Berhasil"); 
-	          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
+				AlertDialog.Builder builder = new AlertDialog.Builder(KuisActivity.this);
+		          builder.setTitle("Anda Berhasil"); 
+		          builder.setMessage("Selamat, Anda berhasil menyelesaikan Kuis Nusantara Propinsi "+prov);
 
-	          builder.setCancelable(false); 
-	          builder.setPositiveButton(R.string.reset_quiz,
-	             new DialogInterface.OnClickListener()                
-	             {                                                       
-	                public void onClick(DialogInterface dialog, int id) 
-	                {
-	                   resetQuiz();                                      
-	                }                              
-	             }
-	          ); 
-	          AlertDialog resetDialog = builder.create();
-	          resetDialog.show();
+		          builder.setCancelable(false); 
+		          builder.setPositiveButton("Kembali Ke Menu",
+		             new DialogInterface.OnClickListener()                
+		             {                                                       
+		                public void onClick(DialogInterface dialog, int id) 
+		                {
+		                   //resetQuiz();
+		                	DatabaseConnector dc = new DatabaseConnector(KuisActivity.this);
+		                	dc.updatePoin(poin, indexProv);
+		                	Intent i = new Intent(KuisActivity.this,MainActivity.class);
+		                	i.putExtra("index", indexProv);
+			  			    startActivity(i);
+			  			    dc.close();
+		                }                              
+		             }
+		          );
+		          AlertDialog resetDialog = builder.create();
+		          resetDialog.show();
 			} 
 			else
 			{  handler.postDelayed(

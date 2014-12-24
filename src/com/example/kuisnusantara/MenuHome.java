@@ -125,5 +125,9 @@ public class MenuHome extends Activity{
 		}
 	};
 	
+	@Override
+	public void onBackPressed(){
+		
+	}
 
 }
